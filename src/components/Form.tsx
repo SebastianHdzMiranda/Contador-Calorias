@@ -12,21 +12,7 @@ type FormProps = {
 function Form({dispatch, datosState}: FormProps) {
 
     const [editMode, setEditMode] = useState(false);
-
-    useEffect(() => {
-        const id = datosState.activeId;
-        const activity = datosState.activities.filter( activity => activity.id === id);
         
-        if (activity.length > 0) {
-            setActivity(activity[0]);
-            setEditMode(true);
-            return;
-        }
-        setEditMode(false);
-
-    }, [datosState])
-    
-    
     const initialState: Activity = {
         id: uuidv4(),
         category: 1,
@@ -35,6 +21,19 @@ function Form({dispatch, datosState}: FormProps) {
     }
 
     const [activity, setActivity] = useState<Activity>(initialState);
+
+    useEffect(() => {
+        if (datosState.activeId) {
+            const id = datosState.activeId;
+            const activity = datosState.activities.filter( activity => activity.id === id);
+            setActivity(activity[0]);
+            setEditMode(true);
+            return;
+        }
+        
+        setEditMode(false);
+        
+    }, [datosState.activeId])
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>)=> {
         const isNumber = ['category', 'calories'].includes(e.target.id);
